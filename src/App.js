@@ -1,30 +1,32 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Route, Switch } from "react-router";
 import { ConnectedRouter } from "connected-react-router";
-import Layout from "./components/layout";
-import MainPage from "./containers/mainPageContainer";
-import DetailPage from "./containers/detailPageContainer";
-import MyTokomonPage from "./containers/myTokomonPageContainer";
 import history from "./middlewares/history";
+import Layout from "./components/layout";
+const MainPage = lazy(() => import("./containers/mainPageContainer"));
+const DetailPage = lazy(() => import("./containers/detailPageContainer"));
+const MyTokomonPage = lazy(() => import("./containers/myTokomonPageContainer"));
 
 const App = (props) => {
   return (
     <ConnectedRouter history={history}>
       <Layout>
-        <Switch>
-          <Route path="/tokomon/:name">
-            <DetailPage />
-          </Route>
-          <Route path="/tokomon">
-            <MainPage />
-          </Route>
-          <Route path="/my-tokomon">
-            <MyTokomonPage />
-          </Route>
-          <Route path="/">
-            <MainPage />
-          </Route>
-        </Switch>
+        <Suspense fallback={<div></div>}>
+          <Switch>
+            <Route path="/tokomon/:name">
+              <DetailPage />
+            </Route>
+            <Route path="/tokomon">
+              <MainPage />
+            </Route>
+            <Route path="/my-tokomon">
+              <MyTokomonPage />
+            </Route>
+            <Route path="/">
+              <MainPage />
+            </Route>
+          </Switch>
+        </Suspense>
       </Layout>
     </ConnectedRouter>
   );
